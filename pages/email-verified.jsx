@@ -12,15 +12,19 @@ import {
 } from "reactstrap";
 import Layout from "../components/Layout";
 
+// Page refetches user profile when email verified
 const EmailVerified = () => {
+  // store refetched user profile
   const [user, setUser] = useState({});
   const router = useRouter();
 
   useEffect(() => {
+    // make API call on mount
     fetch("/api/refreshToken")
       .then((res) => res.json())
       .then((user) => {
         console.log("/api/refreshToken", user);
+        // redirect if user email is not verified
         if (!user.email_verified) return router.push("/");
         setUser(user);
       })
@@ -28,6 +32,7 @@ const EmailVerified = () => {
   }, [router]);
 
   return (
+    // only renders if user email is verified
     user.email_verified && (
       <Layout>
         <Card

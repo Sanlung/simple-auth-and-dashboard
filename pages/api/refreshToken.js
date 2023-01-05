@@ -1,5 +1,6 @@
 import {handleProfile, withApiAuthRequired} from "@auth0/nextjs-auth0";
 
+// Handles refetch of user profile, returns session
 const refreshTokenHandler = async (req, res) => {
   try {
     await handleProfile(req, res, {
@@ -11,4 +12,5 @@ const refreshTokenHandler = async (req, res) => {
   }
 };
 
+// Protect API route on exporting handler
 export default withApiAuthRequired(refreshTokenHandler);

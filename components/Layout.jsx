@@ -1,3 +1,5 @@
+// Layout applied to all pages and contains <title>
+// and <meta> tags and internal links in <head>
 import Head from "next/head";
 import {Container} from "reactstrap";
 

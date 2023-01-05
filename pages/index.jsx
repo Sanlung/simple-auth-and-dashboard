@@ -5,9 +5,13 @@ import Dashboard from "../components/Dashboard";
 import VerifyEmail from "../components/VerifyEmail";
 
 const Home = () => {
+  // get logged in user profile
   const {user, error, isLoading} = useUser();
   console.log(user);
 
+  // Conditionally renders loading/error info or Login
+  // UI or Dashboard; denies access to Dashboard
+  // when email not verified and prompts to verify
   return (
     <Layout>
       {isLoading ? (

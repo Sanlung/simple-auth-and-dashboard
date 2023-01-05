@@ -9,25 +9,33 @@ import {
   Button,
 } from "reactstrap";
 
+// Component overerides DashBoard when email not verified
 const VerifyEmail = ({user}) => {
-  const [emailResent, setEmailResent] = useState(null);
+  // "yes" or "no", for displaying messages
+  const [emailSent, setEmailSent] = useState(null);
 
+  // handler for click to resend verificaiton email
   const sendVerificationEmail = async (e) => {
     try {
+      // sending user_id to /api to resend email
       const response = await fetch(`/api/verificationEmail?sub=${user.sub}`);
       const data = await response.json();
       console.log("/api/verificationEmail", data);
+
+      // display message per API response
       if (response.status === 201) {
-        setEmailResent("yes");
+        setEmailSent("yes");
       } else {
-        setEmailResent("no");
+        setEmailSent("no");
       }
-      setTimeout(() => setEmailResent(null), 6000);
+      // fade out message after 6s
+      setTimeout(() => setEmailSent(null), 6000);
     } catch (error) {
       console.log(error);
     }
   };
 
+  // Renders card with button to get verification email
   return (
     <Card body className='text-center mx-auto shadow' style={{width: "20rem"}}>
       <Image
@@ -51,18 +59,19 @@ const VerifyEmail = ({user}) => {
           color='primary'
           outline
           onClick={(e) => sendVerificationEmail()}>
-          Get Verification Email
+          Resend Email Verification
         </Button>
-        {emailResent === "yes" && (
+        {/* conditionally renders messages upon success or failure to resend verification email */}
+        {emailSent === "yes" && (
           <CardSubtitle tag='h6' className='mt-3 text-primary'>
             We&apos;ve sent another verification email to {user.email}. You may
             close this page upon completing registration.
           </CardSubtitle>
         )}
-        {emailResent === "no" && (
+        {emailSent === "no" && (
           <CardSubtitle tag='h6' className='mt-3 text-danger'>
             Something went wrong. Please try again or contact{" "}
-            <a href='#' className='text-decoration-none'>
+            <a href='#' className='text-decoration-none text-primary'>
               Support
             </a>{" "}
             if the problem persists.

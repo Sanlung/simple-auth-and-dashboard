@@ -1,3 +1,5 @@
+// Top level _document hosts the external
+// <link>'s of the <head> tag
 import {Html, Head, Main, NextScript} from "next/document";
 
 const Document = () => (
