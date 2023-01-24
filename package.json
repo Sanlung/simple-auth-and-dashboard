@@ -1,21 +1,35 @@
 {
-  "name": "aha-demo-app",
+  "name": "aha-fullstack-demo",
+  "version": "1.0.0",
   "private": true,
+  "description": "A simle Next.js, Express, & PostgreSQL fullstack",
+  "main": "server/app.js",
   "scripts": {
     "dev": "next dev",
+    "dev:serv": "nodemon server/app.js",
     "build": "next build",
     "start": "next start",
+    "start:serv": "node server/app.js",
     "lint": "next lint"
   },
+  "author": "Chung Kao",
+  "license": "ISC",
   "dependencies": {
     "@auth0/nextjs-auth0": "^2.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-jwt": "^8.3.0",
+    "jwks-rsa": "^3.0.1",
     "next": "^13.1.1",
+    "pg": "^8.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "reactstrap": "^9.1.5"
+    "reactstrap": "^9.1.5",
+    "v8": "^0.1.0"
   },
   "devDependencies": {
     "eslint": "^8.30.0",
-    "eslint-config-next": "^13.1.1"
+    "eslint-config-next": "^13.1.1",
+    "nodemon": "^2.0.20"
   }
 }

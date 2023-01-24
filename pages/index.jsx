@@ -7,7 +7,7 @@ import VerifyEmail from "../components/VerifyEmail";
 const Home = () => {
   // get logged in user profile
   const {user, error, isLoading} = useUser();
-  console.log(user);
+  console.log("Home", user);
 
   // Conditionally renders loading/error info or Login
   // UI or Dashboard; denies access to Dashboard

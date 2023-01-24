@@ -9,16 +9,15 @@ import {
   Button,
 } from "reactstrap";
 
-// Component overerides DashBoard when email not verified
 const VerifyEmail = ({user}) => {
   // "yes" or "no", for displaying messages
   const [emailSent, setEmailSent] = useState(null);
 
-  // handler for click to resend verificaiton email
-  const sendVerificationEmail = async (e) => {
+  // function to resend verificaiton email
+  const sendVerificationEmail = async () => {
     try {
-      // sending user_id to /api to resend email
-      const response = await fetch(`/api/verificationEmail?sub=${user.sub}`);
+      // sending user to /api to resend email
+      const response = await fetch(`/api/verificationEmail`);
       const data = await response.json();
       console.log("/api/verificationEmail", data);
 
@@ -35,7 +34,6 @@ const VerifyEmail = ({user}) => {
     }
   };
 
-  // Renders card with button to get verification email
   return (
     <Card body className='text-center mx-auto shadow' style={{width: "20rem"}}>
       <Image
@@ -45,8 +43,8 @@ const VerifyEmail = ({user}) => {
         height='280'
         priority
       />
+      <CardTitle tag='h2'>Action Required</CardTitle>
       <CardBody>
-        <CardTitle tag='h2'>Action Required</CardTitle>
         <CardSubtitle tag='h5' className='mb-2'>
           Please verify your email to complete the registration.
         </CardSubtitle>
@@ -59,7 +57,7 @@ const VerifyEmail = ({user}) => {
           color='primary'
           outline
           onClick={(e) => sendVerificationEmail()}>
-          Resend Email Verification
+          Resend Verification Email
         </Button>
         {/* conditionally renders messages upon success or failure to resend verification email */}
         {emailSent === "yes" && (
