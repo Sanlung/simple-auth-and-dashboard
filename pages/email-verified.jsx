@@ -20,10 +20,10 @@ const EmailVerified = () => {
 
   useEffect(() => {
     // make API call on mount
-    fetch("/api/refreshToken")
+    fetch("/api/refresh-token")
       .then((res) => res.json())
       .then((user) => {
-        console.log("/api/refreshToken", user);
+        console.log("/api/refresh-token", user);
         // redirect if user email is not verified
         if (!user.email_verified) return router.push("/");
         setUser(user);
@@ -32,9 +32,9 @@ const EmailVerified = () => {
   }, [router]);
 
   return (
-    // only renders if user email is verified
-    user.email_verified && (
-      <Layout>
+    <Layout>
+      {/* only renders if user email is verified */}
+      {user.email_verified && (
         <Card
           body
           className='text-center mx-auto shadow'
@@ -60,13 +60,10 @@ const EmailVerified = () => {
             </Button>
           </CardBody>
         </Card>
-      </Layout>
-    )
+      )}
+    </Layout>
   );
 };
 
-export const getServerSideProps = withPageAuthRequired({
-  returnTo: "/",
-});
-
-export default EmailVerified;
+// protect page from unauthenticated access
+export default withPageAuthRequired(EmailVerified);

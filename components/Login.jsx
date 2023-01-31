@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {Card, CardBody, CardTitle, Button, ButtonGroup} from "reactstrap";
+import {Card, CardBody, CardTitle, Button} from "reactstrap";
 
 const Login = () => (
   <>
@@ -13,7 +13,7 @@ const Login = () => (
         priority
       />
       <CardBody>
-        <CardTitle tag='h2'>Landing Page</CardTitle>
+        <CardTitle tag='h2'>Login Page</CardTitle>
         <Button href='/api/auth/login' tag='a' color='primary' outline>
           Login | Sign Up
         </Button>

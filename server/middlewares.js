@@ -1,8 +1,8 @@
 require("dotenv").config({path: ".env.local"});
-// import modules to handle JWT
+// modules to handle JWT
 const {expressjwt: jwt} = require("express-jwt");
 const {expressJwtSecret} = require("jwks-rsa");
-// get necessary env variables
+// get environment variables
 const auth0Url = process.env.AUTH0_ISSUER_BASE_URL;
 const apiBaseUrl = process.env.API_BASE_URL;
 

@@ -6,10 +6,13 @@ const verificationEmailHandler = async (req, res) => {
   const auth0Url = process.env.AUTH0_ISSUER_BASE_URL;
   const clientId = process.env.AUTH0_CLIENT_ID;
   const clientSecret = process.env.AUTH0_CLIENT_SECRET;
-  // get user (id) from session
-  const {user} = getSession();
 
   try {
+    // get user session
+    const {user} = await getSession(req, res);
+    // split user_id, e.g., "facebook|0123456789"
+    const identities = user.sub.split("|");
+
     // get Auth0 Mgt API access token
     const response1 = await fetch(`${auth0Url}/oauth/token`, {
       method: "POST",
@@ -27,8 +30,6 @@ const verificationEmailHandler = async (req, res) => {
     // if auth0 returns access token
     if (response1.status === 200) {
       const accessToken = data1.access_token;
-      // separate 'provider' and 'id' from user_id
-      const identities = user.sub.split("|");
 
       // create a job to resend verification email
       const response2 = await fetch(
@@ -54,8 +55,6 @@ const verificationEmailHandler = async (req, res) => {
 
       // respond with status whether email is sent
       res.status(response2.status).json(data2);
-    } else {
-      res.status(response1.status).json(data1);
     }
   } catch (error) {
     res.status(error.status || 500).json({error: error.message});

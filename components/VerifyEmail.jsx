@@ -11,24 +11,24 @@ import {
 
 const VerifyEmail = ({user}) => {
   // "yes" or "no", for displaying messages
-  const [emailSent, setEmailSent] = useState(null);
+  const [isVerifyEmailSent, setIsVerifyEmailSent] = useState(null);
 
   // function to resend verificaiton email
   const sendVerificationEmail = async () => {
     try {
       // sending user to /api to resend email
-      const response = await fetch(`/api/verificationEmail`);
+      const response = await fetch("/api/verification-email");
       const data = await response.json();
       console.log("/api/verificationEmail", data);
 
       // display message per API response
       if (response.status === 201) {
-        setEmailSent("yes");
+        setIsVerifyEmailSent("yes");
       } else {
-        setEmailSent("no");
+        setIsVerifyEmailSent("no");
       }
       // fade out message after 6s
-      setTimeout(() => setEmailSent(null), 6000);
+      setTimeout(() => setIsVerifyEmailSent(null), 6000);
     } catch (error) {
       console.log(error);
     }
@@ -60,13 +60,13 @@ const VerifyEmail = ({user}) => {
           Resend Verification Email
         </Button>
         {/* conditionally renders messages upon success or failure to resend verification email */}
-        {emailSent === "yes" && (
+        {isVerifyEmailSent === "yes" && (
           <CardSubtitle tag='h6' className='mt-3 text-primary'>
             We&apos;ve sent another verification email to {user.email}. You may
             close this page upon completing registration.
           </CardSubtitle>
         )}
-        {emailSent === "no" && (
+        {isVerifyEmailSent === "no" && (
           <CardSubtitle tag='h6' className='mt-3 text-danger'>
             Something went wrong. Please try again or contact{" "}
             <a href='#' className='text-decoration-none text-primary'>

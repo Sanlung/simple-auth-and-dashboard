@@ -1,14 +1,31 @@
-import {Button} from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  CardText,
+  CardImg,
+  Spinner,
+} from "reactstrap";
+import Profile from "./Profile";
 
-const Dashboard = ({user}) => (
-  <>
-    <h1>Dashboard</h1>
-    <h4>{user.name}</h4>
-    <h4>{user.email}</h4>
-    <Button href='/api/auth/logout' tag='a' color='primary' outline>
-      Log Out
-    </Button>
-  </>
-);
+const Dashboard = ({users, profile, onUpdate, hasUpdateFailed}) => {
+  return (
+    <Card body className='mx-auto shadow' style={{minWidth: "20rem"}}>
+      <CardImg />
+      <CardTitle className='text-center fs-1'>Dashboard</CardTitle>
+      <CardBody>
+        {users.isLoading ? (
+          <Spinner color='primary'>Loading...</Spinner>
+        ) : (
+          <Profile
+            profile={profile}
+            onUpdate={onUpdate}
+            hasUpdateFailed={hasUpdateFailed}
+          />
+        )}
+      </CardBody>
+    </Card>
+  );
+};
 
 export default Dashboard;
