@@ -57,7 +57,7 @@ const verificationEmailHandler = async (req, res) => {
       res.status(response2.status).json(data2);
     }
   } catch (error) {
-    res.status(error.status || 500).json({error: error.message});
+    res.status(error.status || 500).json({msg: error.message});
   }
 };
 

@@ -8,8 +8,9 @@ const {
   notFoundMiddleware,
 } = require("./middlewares");
 
-// import router
-const userRouter = require("./routes");
+// import routers
+const userRouter = require("./routes/users");
+const sessionRouter = require("./routes/sessions");
 
 // middlewares
 app.use(express.json());
@@ -20,6 +21,7 @@ app.get("/", (req, res) => res.send("Hello World!"));
 
 // user routes
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/sessions", sessionRouter);
 
 // catch-all middlewares
 app.use(notFoundMiddleware);

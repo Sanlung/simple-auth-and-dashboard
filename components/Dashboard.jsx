@@ -1,31 +1,28 @@
-import {
-  Card,
-  CardBody,
-  CardTitle,
-  CardText,
-  CardImg,
-  Spinner,
-} from "reactstrap";
+import {Card, CardBody, CardTitle, CardImg, Spinner} from "reactstrap";
 import Profile from "./Profile";
+import Stats from "./Stats";
 
-const Dashboard = ({users, profile, onUpdate, hasUpdateFailed}) => {
-  return (
-    <Card body className='mx-auto shadow' style={{minWidth: "20rem"}}>
-      <CardImg />
-      <CardTitle className='text-center fs-1'>Dashboard</CardTitle>
-      <CardBody>
-        {users.isLoading ? (
-          <Spinner color='primary'>Loading...</Spinner>
-        ) : (
+const Dashboard = ({users, sessions, onUpdate, hasUpdateFailed}) => (
+  <Card body className='mx-auto shadow' style={{minWidth: "20rem"}}>
+    <CardImg />
+    <CardTitle className='text-center fs-1'>Dashboard</CardTitle>
+    <CardBody>
+      {users.isLoading ? (
+        <Spinner color='primary' className='d-block mx-auto'>
+          Loading...
+        </Spinner>
+      ) : (
+        <>
           <Profile
-            profile={profile}
+            profile={users.user}
             onUpdate={onUpdate}
             hasUpdateFailed={hasUpdateFailed}
           />
-        )}
-      </CardBody>
-    </Card>
-  );
-};
+          <Stats users={users.data} sessions={sessions} />
+        </>
+      )}
+    </CardBody>
+  </Card>
+);
 
 export default Dashboard;

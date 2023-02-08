@@ -8,37 +8,60 @@ import VerifyEmail from "../components/VerifyEmail";
 // import useSessionPersistentState from "../util/persistState";
 
 const Home = () => {
-  // get auth0 profile for logged-in user
+  // get auth0 profile of logged-in user
   const {user, error, isLoading} = useUser();
   // create users state using data from custom DB
   const [users, setUsers] = useState({
-    data: [],
-    count: 0,
+    data: [], // all users
+    user: {}, // logged-in user
     isLoading: true,
   });
-  // custom-profile state for logged-in user
-  const [profile, setProfile] = useState({});
+  // create state for user sessions in last 7 days
+  const [sessions, setSessions] = useState([]);
   // whether user data failed to update
   const [hasUpdateFailed, setHasUpdateFailed] = useState(false);
 
-  const getAllUserData = useCallback(async () => {
+  const getUsersAndSessionsData = useCallback(async () => {
     if (user) {
       try {
-        // fetch all user data
-        const response = await fetch("/api/users");
-        const data = await response.json();
-        console.log("/api/users", data);
+        // fetch last week's user sessions & set state
+        const response1 = await fetch("/api/sessions");
+        const sessionData = await response1.json();
+        console.log("/api/sessions", sessionData);
 
-        // get & set logged-in user profile
-        const [userinfo] = data.users.filter(
+        // fetch all user data
+        const response2 = await fetch("/api/users");
+        const data2 = await response2.json();
+        console.log("/api/users", data2);
+
+        // append 'last_session' prop to user props
+        const userData = data2.users.map((usr) => {
+          const usrSessions = sessionData.sessions.filter(
+            (sess) => sess.auth0_id === usr.auth0_id
+          );
+          const lastSession =
+            usrSessions[0].session_end !== "--"
+              ? usrSessions[0].session_end
+              : usrSessions[1]
+              ? usrSessions[1].session_end
+              : "--";
+          return {
+            ...usr,
+            last_session: lastSession,
+          };
+        });
+
+        // get custom profile of logged-in user
+        const [userInfo] = data2.users.filter(
           (usr) => usr.auth0_id === user.sub
         );
-        setProfile(userinfo);
 
+        // update sessions state
+        setSessions(sessionData.sessions);
         // update users state
         setUsers({
-          data: data.users,
-          count: data.count,
+          data: userData,
+          user: userInfo,
           isLoading: false,
         });
       } catch (error) {
@@ -47,9 +70,10 @@ const Home = () => {
     }
   }, [user]);
 
+  // get users & sessions data on mount
   useEffect(() => {
-    getAllUserData();
-  }, [getAllUserData]);
+    getUsersAndSessionsData();
+  }, [getUsersAndSessionsData]);
 
   // call API to change user profile_name
   const updateUsername = async (name) => {
@@ -64,11 +88,11 @@ const Home = () => {
         }),
       });
       const data = await response.json();
-      console.log("POST api/users/rename", data);
+      console.log("/api/users/rename", data);
 
       if (response.status === 200) {
         // refetch user data
-        getAllUserData();
+        getUserData();
       } else {
         setHasUpdateFailed(true);
         // fade out message after 6s
@@ -94,7 +118,7 @@ const Home = () => {
         user.email_verified ? (
           <Dashboard
             users={users}
-            profile={profile}
+            sessions={sessions}
             onUpdate={updateUsername}
             hasUpdateFailed={hasUpdateFailed}
           />

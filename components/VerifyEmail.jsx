@@ -34,6 +34,7 @@ const VerifyEmail = ({user}) => {
     }
   };
 
+  // Renders card prompt to verify email
   return (
     <Card body className='text-center mx-auto shadow' style={{width: "20rem"}}>
       <Image

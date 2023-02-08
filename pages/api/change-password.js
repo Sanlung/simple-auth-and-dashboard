@@ -26,7 +26,7 @@ const changePasswordHandler = async (req, res) => {
 
     res.status(response.status).json({message});
   } catch (error) {
-    res.status(error.status || 500).json({error: error.message});
+    res.status(error.status || 500).json({msg: error.message});
   }
 };
 

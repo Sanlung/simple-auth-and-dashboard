@@ -1,6 +1,6 @@
-const pool = require("./dbClients");
-const updateFields = require("./patchHelper");
-const CustomApiError = require("./customError");
+const pool = require("../dbClients");
+const updateFields = require("../patchHelper");
+const CustomApiError = require("../customError");
 const {
   getAllUsers,
   getOneUser,
@@ -8,7 +8,7 @@ const {
   addOneUser,
   editUserInfo,
   removeOneUser,
-} = require("./queries");
+} = require("../queries/users");
 
 // GET /api/v1/users
 const getUsers = async (req, res) => {

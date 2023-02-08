@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from "react";
+import {useRouter} from "next/router";
 import {
   ListGroup,
   ListGroupItem,
@@ -8,14 +9,16 @@ import {
 } from "reactstrap";
 
 const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
-  // for input control
+  // for controlled input
   const [name, setName] = useState(profile.profile_name);
   // toggle display of username or input box
   const [isEdit, setIsEdit] = useState(false);
   // "yes" or "no", for displaying messages
   const [isPWEmailSent, setIsPWEmailSent] = useState(null);
   const inputRef = useRef();
+  const router = useRouter();
 
+  // focus input filed
   useEffect(() => {
     if (isEdit && inputRef.current) {
       inputRef.current.focus();
@@ -43,6 +46,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
     }
   };
 
+  // function to update user name
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name !== profile.profile_name) {
@@ -51,17 +55,39 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
     setIsEdit(false);
   };
 
+  const handleLogOut = async () => {
+    try {
+      const response = await fetch("/api/sessions/end", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: 3,
+        }),
+      });
+      const data = await response.json();
+      console.log("/api/sessions/end", data);
+
+      if (response.status === 200) {
+        router.push("/api/auth/logout");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Renders logged in user name & email
   return (
     <>
       <ListGroup>
         <ListGroupItem active>
-          <span>User Profile</span>
+          <span>User Info</span>
           <Button
             color='primary'
             size='sm'
-            href='/api/auth/logout'
-            tag='a'
-            className='position-absolute end-0'>
+            className='position-absolute end-0 me-1'
+            onClick={(e) => handleLogOut()}>
             Log Out
           </Button>
         </ListGroupItem>
@@ -113,9 +139,19 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
           instructions in the email to change your passowrd.
         </CardText>
       )}
-      {(hasUpdateFailed || isPWEmailSent === "no") && (
+      {isPWEmailSent === "no" && (
         <CardText tag='h6' className='mt-3 text-danger'>
           Something went wrong. Please try again or contact{" "}
+          <a href='#' className='text-decoration-none text-primary'>
+            Support
+          </a>{" "}
+          if the problem persists.
+        </CardText>
+      )}
+      {hasUpdateFailed && (
+        <CardText tag='h6' className='mt-3 text-danger'>
+          Either the name is taken, or something else went wrong. Please try
+          another name first. Contact{" "}
           <a href='#' className='text-decoration-none text-primary'>
             Support
           </a>{" "}
