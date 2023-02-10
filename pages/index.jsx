@@ -24,7 +24,7 @@ const Home = () => {
   const getUsersAndSessionsData = useCallback(async () => {
     if (user) {
       try {
-        // fetch last week's user sessions & set state
+        // fetch past week's user sessions
         const response1 = await fetch("/api/sessions");
         const sessionData = await response1.json();
         console.log("/api/sessions", sessionData);
@@ -34,7 +34,8 @@ const Home = () => {
         const data2 = await response2.json();
         console.log("/api/users", data2);
 
-        // append 'last_session' prop to user props
+        // add last_session prop to user data
+        // & convert timestamps to UTC+8(TPE)
         const userData = data2.users.map((usr) => {
           const usrSessions = sessionData.sessions.filter(
             (sess) => sess.auth0_id === usr.auth0_id
@@ -45,9 +46,15 @@ const Home = () => {
               : usrSessions[1]
               ? usrSessions[1].session_end
               : "--";
+          usr.created_at = new Date(usr.created_at).toLocaleString();
+
           return {
             ...usr,
-            last_session: lastSession,
+            // timestamp for TPE time (UTC+8)
+            last_session:
+              lastSession === "--"
+                ? "--"
+                : new Date(lastSession).toLocaleString(),
           };
         });
 
@@ -55,6 +62,8 @@ const Home = () => {
         const [userInfo] = data2.users.filter(
           (usr) => usr.auth0_id === user.sub
         );
+        // add session id to logged-in user profile
+        userInfo.session_id = sessionData.sessions[0].id;
 
         // update sessions state
         setSessions(sessionData.sessions);
@@ -92,7 +101,7 @@ const Home = () => {
 
       if (response.status === 200) {
         // refetch user data
-        getUserData();
+        getUsersAndSessionsData();
       } else {
         setHasUpdateFailed(true);
         // fade out message after 6s

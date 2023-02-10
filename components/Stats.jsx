@@ -1,13 +1,8 @@
 import {ListGroup, ListGroupItem, CardTitle, Table} from "reactstrap";
+import countDailyUsers from "../util/countDailyUsers";
 
 const Stats = ({users, sessions}) => {
-  const now = new Date();
-  const dayAgo = new Date(now - 86400000);
-  const dayAgoStr = dayAgo.toJSON();
-
-  // users with active sessions in last 24 hrs
-  // let dailyActiveUsers = [];
-  // sessions.filter(sess => sess.session > dayAgoStr).forEach(sess => !dailyActiveUsers.includes(sess.auth0_id) && dailyActiveUsers.push(sess));
+  const dailyUserCounts = countDailyUsers(sessions);
 
   return (
     <>
@@ -15,10 +10,21 @@ const Stats = ({users, sessions}) => {
       <ListGroup>
         <ListGroupItem active>Statistics</ListGroupItem>
         <ListGroupItem action>
-          Total number of users:&nbsp;{users.length}
+          Total number of users:
+          <span className='d-inline-block ms-3'>{users.length}</span>
         </ListGroupItem>
-        <ListGroupItem action>Active-user count today:</ListGroupItem>
-        <ListGroupItem action>7-day mean active users:</ListGroupItem>
+        <ListGroupItem action>
+          Active-user count today:
+          <span className='d-inline-block ms-3'>{dailyUserCounts[0]}</span>
+        </ListGroupItem>
+        <ListGroupItem action>
+          7-day mean user count:
+          <span className='d-inline-block ms-3'>
+            {(
+              dailyUserCounts.reduce((a, b) => a + b) / dailyUserCounts.length
+            ).toFixed(1)}
+          </span>
+        </ListGroupItem>
       </ListGroup>
       <CardTitle className='text-primary fw-bolder ms-1 mt-2'>
         All Users
@@ -28,7 +34,7 @@ const Stats = ({users, sessions}) => {
           <tr className='table-primary'>
             <th>Name</th>
             <th>Signed up on</th>
-            <th># of logins</th>
+            <th>No. of logins</th>
             <th>Last session</th>
           </tr>
         </thead>

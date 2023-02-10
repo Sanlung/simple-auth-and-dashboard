@@ -63,7 +63,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          id: 3,
+          id: profile.session_id,
         }),
       });
       const data = await response.json();
