@@ -66,4 +66,6 @@ const EmailVerified = () => {
 };
 
 // protect page from unauthenticated access
-export default withPageAuthRequired(EmailVerified);
+export const getServerSideProps = withPageAuthRequired();
+
+export default EmailVerified;

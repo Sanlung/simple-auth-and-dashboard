@@ -3,8 +3,7 @@ import {getAccessToken, withApiAuthRequired} from "@auth0/nextjs-auth0";
 // Handler to update current session's session_end value
 const updateSessionHandler = async (req, res) => {
   const apiBaseUrl = process.env.API_BASE_URL;
-  const now = new Date();
-  const timestamp = now.toJSON();
+  const timestamp = new Date().toJSON();
 
   try {
     // get access token for backend API
