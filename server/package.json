@@ -1,0 +1,26 @@
+{
+  "name": "aha-fullstack-demo-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Backend for simle Next.js, Express, & PostgreSQL fullstack app",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "author": "Chung Kao",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "express-jwt": "^8.4.1",
+    "jwks-rsa": "^3.0.1",
+    "pg": "^8.9.0",
+    "swagger-ui-express": "^4.6.0",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}

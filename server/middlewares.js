@@ -1,4 +1,4 @@
-require("dotenv").config({path: ".env.local"});
+require("dotenv").config({path: ".env"});
 // modules to handle JWT
 const {expressjwt: jwt} = require("express-jwt");
 const {expressJwtSecret} = require("jwks-rsa");

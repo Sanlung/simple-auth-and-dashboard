@@ -1,4 +1,4 @@
-require("dotenv").config({path: ".env.local"});
+require("dotenv").config({path: ".env"});
 // import Pool module from node-postgres
 const {Pool} = require("pg");
 
