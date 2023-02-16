@@ -1,5 +1,5 @@
 import Image from "next/image";
-import {Card, CardBody, CardTitle, Button} from "reactstrap";
+import {Card, CardBody, CardTitle, Button, ButtonGroup} from "reactstrap";
 
 const Login = () => (
   <>
@@ -14,9 +14,14 @@ const Login = () => (
       />
       <CardBody>
         <CardTitle tag='h2'>Login Page</CardTitle>
-        <Button href='/api/auth/login' tag='a' color='primary' outline>
-          Login | Sign Up
-        </Button>
+        <ButtonGroup className='mt-3'>
+          <Button href='/api/auth/login' tag='a' color='primary' outline>
+            Login
+          </Button>
+          <Button href='/api/auth/sign-up' tag='a' color='primary' outline>
+            Sign up
+          </Button>
+        </ButtonGroup>
       </CardBody>
     </Card>
   </>

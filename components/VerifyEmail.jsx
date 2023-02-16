@@ -17,7 +17,7 @@ const VerifyEmail = ({user}) => {
   const sendVerificationEmail = async () => {
     try {
       // sending user to /api to resend email
-      const response = await fetch("/api/verification-email");
+      const response = await fetch("/api/auth/verification-email");
       const data = await response.json();
       console.log("/api/verificationEmail", data);
 

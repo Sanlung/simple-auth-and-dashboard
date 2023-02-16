@@ -55,17 +55,26 @@ const createUser = async (req, res) => {
 
 // PATCH /api/v1/users/:id
 const updateUser = async (req, res) => {
-  const auth0_id = req.params.id;
-  const {set, values} = updateFields(req.body);
+  // allow update only for profile_name or logins_count
+  const field = Object.keys(req.body);
+  if (
+    field.length === 1 &&
+    (field[0] === "profile_name" || field[0] === "logins_count")
+  ) {
+    const auth0_id = req.params.id;
+    const {set, values} = updateFields(req.body);
 
-  const result = await pool.query(editUserInfo(set), [auth0_id, ...values]);
+    const result = await pool.query(editUserInfo(set), [auth0_id, ...values]);
 
-  if (!result.rowCount) throw new CustomApiError(404, "User was not found.");
+    if (!result.rowCount) throw new CustomApiError(404, "User was not found.");
 
-  res.status(200).json({
-    msg: "User was updated successfully.",
-    user: result.rows[0],
-  });
+    res.status(200).json({
+      msg: "User was updated successfully.",
+      user: result.rows[0],
+    });
+  } else {
+    throw new CustomApiError(400, "You can't change the field(s)");
+  }
 };
 
 // DELETE /api/v1/users/:id

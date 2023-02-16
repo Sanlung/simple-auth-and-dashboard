@@ -20,7 +20,7 @@ const EmailVerified = () => {
 
   useEffect(() => {
     // make API call on mount
-    fetch("/api/refresh-token")
+    fetch("/api/auth/refresh-token")
       .then((res) => res.json())
       .then((user) => {
         console.log("/api/refresh-token", user);

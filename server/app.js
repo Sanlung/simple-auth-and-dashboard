@@ -1,6 +1,15 @@
+require("dotenv").config({path: ".env.local"});
+require("express-async-errors");
+
+// Swagger
+const swaggerUI = require("swagger-ui-express");
+const YAML = require("yamljs");
+const swaggerDocument = YAML.load("./swagger.yaml");
+
 // import express app
 const express = require("express");
 const app = express();
+
 // import middlewares
 const {
   authenticateJwt,
@@ -12,16 +21,15 @@ const {
 const userRouter = require("./routes/users");
 const sessionRouter = require("./routes/sessions");
 
-// middlewares
+// express middlewares
 app.use(express.json());
-app.use(authenticateJwt);
 
-// home route
-app.get("/", (req, res) => res.send("Hello World!"));
+// API documentation route
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // user routes
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/sessions", sessionRouter);
+app.use("/api/v1/users", authenticateJwt, userRouter);
+app.use("/api/v1/sessions", authenticateJwt, sessionRouter);
 
 // catch-all middlewares
 app.use(notFoundMiddleware);

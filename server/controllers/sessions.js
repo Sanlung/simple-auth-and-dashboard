@@ -30,6 +30,11 @@ const createSession = async (req, res) => {
 
 // PATCH /api/v1/sessions/:id
 const updateSession = async (req, res) => {
+  // allow update only for session_end
+  const field = Object.keys(req.body);
+  if (field.length > 1 || field[0] !== "session_end")
+    throw new CustomApiError(400, "You can't update this info");
+
   const {id} = req.params;
   const {set, values} = updateFields(req.body);
 
@@ -40,6 +45,7 @@ const updateSession = async (req, res) => {
   res.status(200).json({
     msg: "Session was updated successfully.",
     session: result.rows[0],
+    reqBody: field,
   });
 };
 

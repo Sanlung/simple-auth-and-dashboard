@@ -29,7 +29,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
   const sendChangePasswordEmail = async () => {
     try {
       // sending user to /api to send email
-      const response = await fetch("/api/change-password");
+      const response = await fetch("/api/auth/change-password");
       const data = await response.json();
       console.log("/api/change-password", data);
 
@@ -100,15 +100,19 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
                 name='name'
                 type='text'
                 value={name}
-                className='no-style'
+                className='no-style d-inline-block ms-2'
                 onChange={(e) => setName(e.target.value)}
               />
             </form>
           ) : (
-            <span>Name:&nbsp;{name}</span>
+            <span>
+              Name:<span className='d-inline-block ms-3'>{name}</span>
+            </span>
           )}
         </ListGroupItem>
-        <ListGroupItem action>Email:&nbsp;{profile.email}</ListGroupItem>
+        <ListGroupItem action>
+          Email:<span className='d-inline-block ms-3'>{profile.email}</span>
+        </ListGroupItem>
       </ListGroup>
       <ButtonGroup className='my-3'>
         <Button
@@ -134,13 +138,13 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
       </ButtonGroup>
       {/* conditionally renders messages upon success or failure to send email or to update user */}
       {isPWEmailSent === "yes" && (
-        <CardText tag='h6' className='mt-3 text-primary'>
+        <CardText tag='h6' className='my-3 text-primary'>
           We&apos;ve sent an email to {profile.email}. Please follow the
           instructions in the email to change your passowrd.
         </CardText>
       )}
       {isPWEmailSent === "no" && (
-        <CardText tag='h6' className='mt-3 text-danger'>
+        <CardText tag='h6' className='my-3 text-danger'>
           Something went wrong. Please try again or contact{" "}
           <a href='#' className='text-decoration-none text-primary'>
             Support
@@ -149,13 +153,12 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
         </CardText>
       )}
       {hasUpdateFailed && (
-        <CardText tag='h6' className='mt-3 text-danger'>
-          Either the name is taken, or something else went wrong. Please try
-          another name first. Contact{" "}
+        <CardText tag='h6' className='my-3 text-danger'>
+          The name is not available. Please try again or contact{" "}
           <a href='#' className='text-decoration-none text-primary'>
             Support
           </a>{" "}
-          if the problem persists.
+          if you have problem change the name.
         </CardText>
       )}
     </>

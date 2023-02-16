@@ -1,0 +1,837 @@
+openapi: 3.0.0
+info:
+  title: Simple Auth & Dashboard Auth/Data API
+  description: Simple Auth & Dashboard is a demonstration web app which features user authentication and a simple dashboard displaying user sessions data. The app is created on the Next.js/Express frameworks and employs Auth0 for user authentication. All API calls are made via the Next.js '/api' routes to Auth0 or to the server's '/api/v1' end point, which require Auth0-issued access token to authenticate access. This documentation includes, besides app API, Auth0 API end points for access token (as necessary for access to app API) and for manual user sign-up with Auth0. It appears Auth0 requires user sign-up/login only via browser authentication flow.
+  contact:
+    name: Chung Kao
+    email: chungckao@gmail.com
+  version: "1.0"
+servers:
+  - url: http://localhost:3000/api
+    description: development BaseUrl
+  - url: https://simple-auth-and-dashboard.web.app/api
+    description: poduction BaseUrl
+  - url: http://localhost:3001/api/v1
+    description: development ApiUrl
+  - url: https://simple-auth-and-dashboard.onrender.com/api/v1
+    description: production ApiUrl
+  - url: https://dev-lp2pqg88am2bfulk.us.auth0.com
+    description: Auth0Url for Auth0 API
+paths:
+  /auth/sign-up:
+    get:
+      tags:
+        - Auth
+      summary: Get Sign-up Interface
+      operationId: GetSignupInterface
+      description: Call to initiate authentication and for redirection to sign-up interface
+      parameters: []
+      responses:
+        "302":
+          description: Success - redirect to Auth0 sign-up page
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/login:
+    get:
+      tags:
+        - Auth
+      summary: Get Login Interface
+      operationId: GetLoginInterface
+      description: Call to initiate authentication and for redirection to login interface
+      parameters: []
+      responses:
+        "302":
+          description: Success - redirect to Auth0 login page
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/logout:
+    get:
+      tags:
+        - Auth
+      summary: Log Out User
+      operationId: LogOutUser
+      description: Call to log out user and redirect to application login page
+      parameters: []
+      responses:
+        "302":
+          description: Success - redirect to application login page
+          headers: {}
+      deprecated: false
+      security: []
+  /oauth/token:
+    post:
+      tags:
+        - Auth0
+      summary: Get Access Token
+      operationId: GetAccessToken
+      description: Retrieve Auth0 access token to access application API
+      parameters: []
+      requestBody:
+        description: client_id, client_secret, audience, grant_type are required
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GetAccessTokenRequest"
+            example:
+              client_id: CLIENT_ID
+              client_secret: CLIENT_SECRET
+              audience: https://simple-auth-and-dashboard.onrender.com/api/v1/
+              grant_type: client_credentials
+        required: true
+      responses:
+        "200":
+          description: OK - returns a token object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAccessTokenResponse"
+              example:
+                access_token: yugTdf98)...bnhg#Apz
+                scope: create:users read:users update:users
+                expires_in: 86400
+                token_type: Bearer
+      deprecated: false
+      security: []
+  /dbconnections/signup:
+    post:
+      tags:
+        - Auth0
+      summary: Sign Up User
+      operationId: SignUpUser
+      description: Sign up user with Auth0. Accepts only 'Username-Password-Authentication' connection. The user manually signed up this way will not be added to the application database and will need to be manually added in there.
+      parameters: []
+      requestBody:
+        description: client_id, email, password and connection are required
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpUserRequest"
+            example:
+              client_id: CLIENT_ID
+              email: myemail@gmail.com
+              password: UpLowCharNumSym@
+              connection: Username-Password-Authentication
+        required: true
+      responses:
+        "200":
+          description: User created (on Auth0)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignUpUserResponse"
+              example:
+                _id: auth0|58457fe6b27...
+                email_verified: false
+                email: myemail@gmail.com
+                app_metadata: {}
+                user_metadata: {}
+      deprecated: false
+      security: []
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create User
+      operationId: CreateUser
+      description: Create a new user
+      parameters: []
+      requestBody:
+        description: auth0_id, profile_name, email, created_at, and logins_count are required and profile_name and email must be unique
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+            example:
+              auth0_id: auth0|123456789101213
+              profile_name: johndoe
+              email: johndoe@gmail.com
+              created_at: 2023-01-23T00:00:01.001Z
+              logins_count: 9
+        required: true
+      responses:
+        "201":
+          description: Created - returns the new user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateUserResponse"
+              example:
+                msg: User was created successfully
+                user:
+                  id: 5
+                  auth0_id: auth0|123456789101213
+                  profile_name: johndoe
+                  email: johndoe@gmail.com
+                  created_at: 2023-01-23T00:00:01.001Z
+                  logins_count: 9
+      deprecated: false
+      security:
+        - bearer: []
+    get:
+      tags:
+        - Users
+      summary: Get All Users
+      operationId: GetAllUsers
+      description: Get all the existing users
+      parameters: []
+      responses:
+        "200":
+          description: OK - returns all the users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAllUsersResponse"
+              example:
+                users:
+                  - id: 5
+                    auth0_id: auth0|123456789101213
+                    profile_name: johndoe
+                    email: johndoe@gmail.com
+                    created_at: 2023-01-23T00:00:01.001Z
+                    logins_count: 9
+                  - id: 6
+                    auth0_id: facebook|123456789111213
+                    profile_name: janesmith
+                    email: janesmith@gmail.com
+                    created_at: 2023-01-24T12:10:24.781Z
+                    logins_count: 5
+                count: 2
+      deprecated: false
+      security:
+        - bearer: []
+  /users/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The Auth0 ID for the user
+    get:
+      tags:
+        - Users
+      summary: Get Single User
+      operationId: GetSingleUser
+      description: Get one user by Auth0 ID
+      parameters:
+        - name: id
+          in: path
+          description: The Auth0 user ID
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: auth0|123456789101213
+      responses:
+        "200":
+          description: OK - returns the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSingleUserResponse"
+              example:
+                user:
+                  id: 5
+                  auth0_id: auth0|123456789101213
+                  profile_name: johndoe
+                  email: johndoe@gmail.com
+                  created_at: 2023-01-23T00:00:01.001Z
+                  logins_count: 9
+      deprecated: false
+      security:
+        - bearer: []
+    patch:
+      tags:
+        - Users
+      summary: Update User
+      operationId: UpdateUser
+      description: Update one user by Auth0 ID
+      parameters:
+        - name: id
+          in: path
+          description: The Auth0 user ID
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: auth0|123456789101213
+      requestBody:
+        description: Can update either profile_name or logins_count in a single request
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+            example:
+              profile_name: John Doe
+        required: true
+      responses:
+        "200":
+          description: OK - returns the updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateUserResponse"
+              example:
+                msg: User was updated successfully
+                user:
+                  id: 5
+                  auth0_id: auth0|123456789101213
+                  profile_name: John Doe
+                  email: johndoe@gmail.com
+                  created_at: 2023-01-23T00:00:01.001Z
+                  logins_count: 8
+      deprecated: false
+      security:
+        - bearer: []
+    delete:
+      tags:
+        - Users
+      summary: Delete User
+      operationId: DeleteUser
+      description: For admin only - delete one user by Auth0 ID
+      parameters:
+        - name: id
+          in: path
+          description: Auth0 user ID
+          required: true
+          style: simple
+          schema:
+            type: string
+            example: auth0|123456789101213
+      responses:
+        "200":
+          description: OK - returns the deleted user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeleteUserResponse"
+              example:
+                msg: User was removed successfully
+                user:
+                  id: 5
+                  auth0_id: auth0|123456789101213
+                  profile_name: John Doe
+                  email: johndoe@gmail.com
+                  created_at: 2023-01-23T00:00:01.001Z
+                  logins_count: 8
+      deprecated: false
+      security:
+        - bearer: []
+  /sessions:
+    post:
+      tags:
+        - Sessions
+      summary: Create Session
+      operationId: CreateSession
+      description: Create a new session
+      parameters: []
+      requestBody:
+        description: auth0_id and session_start are required and auth0_id must exists in users
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSessionRequest"
+            example:
+              auth0_id: auth0|123456789101213
+              session_start: 2023-01-23T00:00:01.001Z
+        required: true
+      responses:
+        "201":
+          description: Created - returns the new session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateSessionResponse"
+              example:
+                msg: Session was created successfully
+                session:
+                  id: 5
+                  auth0_id: auth0|123456789101213
+                  session_start: 2023-01-23T00:00:01.001Z
+                  session_end: --
+      deprecated: false
+      security:
+        - bearer: []
+    get:
+      tags:
+        - Sessions
+      summary: Get All Sessions
+      operationId: GetAllSessions
+      description: Get all the existing sessions
+      parameters: []
+      responses:
+        "200":
+          description: OK - returns all the sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetAllSessionsResponse"
+              example:
+                sessions:
+                  - id: 5
+                    auth0_id: auth0|123456789101213
+                    session_start: 2023-01-23T00:00:01.001Z
+                    session_end: 2023-01-24T12:10:24.781Z
+                  - id: 6
+                    auth0_id: facebook|123456789111213
+                    session_start: 2023-01-24T19:35:56.123Z
+                    session_end: --
+                count: 2
+      deprecated: false
+      security:
+        - bearer: []
+  /sessions/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The session ID
+    patch:
+      tags:
+        - Sessions
+      summary: Update Session
+      operationId: UpdateSession
+      description: Update one session by session ID
+      parameters:
+        - name: id
+          in: path
+          description: The session ID
+          required: true
+          style: simple
+          schema:
+            type: number
+            example: 5
+      requestBody:
+        description: Can update only session_end
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateSessionRequest"
+            example:
+              session_end: 2023-01-24T19:35:56.123Z
+        required: true
+      responses:
+        "200":
+          description: OK - returns the updated session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateSessionResponse"
+              example:
+                msg: Session was updated successfully
+                session:
+                  id: 5
+                  auth0_id: auth0|123456789101213
+                  session_start: 2023-01-23T00:00:01.001Z
+                  session_end: 2023-01-24T12:10:24.781Z
+      deprecated: false
+      security:
+        - bearer: []
+components:
+  schemas:
+    SignUpUserRequest:
+      title: SignupUserRequest
+      required:
+        - clent_id
+        - email
+        - password
+        - connection
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: Auth0 client ID
+        email:
+          type: string
+        password:
+          type: string
+        connection:
+          type: string
+      example:
+        client_id: myAuth0HashClientId
+        email: myemail@gmail.com
+        password: Tomars@123?
+        connection: Username-Password-Authentication
+    SignUpUserResponse:
+      title: SignUpUserResponse
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Auth0 user ID
+        email_verified:
+          type: boolean
+        email:
+          type: string
+        username:
+          type: string
+      example:
+        _id: auth0|58457fe6b27...
+        email_verified: false
+        email: myemail@gmail.com
+        app_metadata: {}
+        user_metadata: {}
+    GetAccessTokenRequest:
+      title: GetAccessTokenRequest
+      required:
+        - client_id
+        - client_secret
+        - audience
+        - grant_type
+      type: object
+      properties:
+        client_id:
+          type: string
+          description: Auth0 client ID
+        client_secret:
+          type: string
+          description: Auth0 client secret
+        audience:
+          type: string
+          description: the end-point to receive the access token
+        grant_type:
+          type: string
+          description: client credential flow used for access
+      example:
+        client_id: CLIENT_ID
+        client_secret: CLIENT_SECRET
+        audience: https://simple-auth-and-dashboard.onrender.com/api/v1/
+        grant_type: client_credentials
+    GetAccessTokenResponse:
+      title: GetAccessTokenResponse
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: JWT token
+        scope:
+          type: string
+          description: space-separated list of scope of access
+        expires_in:
+          type: string
+          description: token expiration timeframe
+        token_type:
+          type: string
+          description: type of token
+      example:
+        access_token: yugTdf98)...bnhg#Apz
+        scope: create:users read:users update:users
+        expires_in: 86400
+        token_type: Bearer
+    CreateUserRequest:
+      title: CreateUserRequest
+      required:
+        - auth0_id
+        - profile_name
+        - email
+        - created_at
+        - logins_count
+      unique:
+        - profile_name
+      type: object
+      properties:
+        auth0_id:
+          type: string
+        profile_name:
+          type: string
+        email:
+          type: string
+        created_at:
+          type: string
+        logins_count:
+          type: number
+      example:
+        auth0_id: auth0|123456789101213
+        profile_name: johndoe
+        email: johndoe@gmail.com
+        created_at: 2023-01-23T00:00:01.001Z
+        logins_count: 9
+    CreateUserResponse:
+      title: CreateUserResponse
+      type: object
+      properties:
+        msg:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: number
+            auth0_id:
+              type: string
+            profile_name:
+              type: string
+            email:
+              type: string
+            created_at:
+              type: string
+            logins_count:
+              type: number
+      example:
+        msg: User was created successfully
+        user:
+          id: 5
+          auth0_id: auth0|123456789101213
+          profile_name: johndoe
+          email: johndoe@gmail.com
+          created_at: 2023-01-23T00:00:01.001Z
+          logins_count: 9
+    GetAllUsersResponse:
+      title: GetAllUsersResponse
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              auth0_id:
+                type: string
+              profile_name:
+                type: string
+              email:
+                type: string
+              created_at:
+                type: string
+              logins_count:
+                type: number
+        count:
+          type: number
+      example:
+        users:
+          - id: 5
+            auth0_id: auth0|123456789101213
+            profile_name: johndoe
+            email: johndoe@gmail.com
+            created_at: 2023-01-23T00:00:01.001Z
+            logins_count: 9
+          - id: 6
+            auth0_id: facebook|123456789111213
+            profile_name: janesmith
+            email: janesmith@gmail.com
+            created_at: 2023-01-24T12:10:24.781Z
+            logins_count: 5
+        count: 15
+    GetSingleUserResponse:
+      title: GetSingleUserResponse
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              type: number
+            auth0_id:
+              type: string
+            profile_name:
+              type: string
+            email:
+              type: string
+            created_at:
+              type: string
+            logins_count:
+              type: number
+      example:
+        user:
+          id: 5
+          auth0_id: auth0|123456789101213
+          profile_name: johndoe
+          email: johndoe@gmail.com
+          created_at: 2023-01-23T00:00:01.001Z
+          logins_count: 9
+    UpdateUserRequest:
+      title: UpdateUserRequest
+      required:
+        - profile_name
+        - logins_count
+      type: object
+      properties:
+        profile_name:
+          type: string
+        logins_count:
+          type: number
+      example:
+        profile_name: John Doe
+        logins_count: 8
+    UpdateUserResponse:
+      title: UpdateUserResponse
+      type: object
+      properties:
+        msg:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: number
+            auth0_id:
+              type: string
+            profile_name:
+              type: string
+            email:
+              type: string
+            created_at:
+              type: string
+            logins_count:
+              type: number
+      example:
+        msg: User was updated successfully
+        user:
+          id: 5
+          auth0_id: auth0|123456789101213
+          profile_name: John Doe
+          email: johndoe@gmail.com
+          created_at: 2023-01-23T00:00:01.001Z
+          logins_count: 8
+    DeleteUserResponse:
+      title: DeleteUserResponse
+      type: object
+      properties:
+        msg:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: number
+            auth0_id:
+              type: string
+            profile_name:
+              type: string
+            email:
+              type: string
+            created_at:
+              type: string
+            logins_count:
+              type: number
+      example:
+        msg: User was removed successly
+        user:
+          id: 5
+          auth0_id: auth0|123456789101213
+          profile_name: John Doe
+          email: johndoe@gmail.com
+          created_at: 2023-01-23T00:00:01.001Z
+          Logins_count: 8
+    CreateSessionRequest:
+      title: CreateSessionRequest
+      required:
+        - auth0_id
+        - session_start
+      type: object
+      properties:
+        auth0_id:
+          type: string
+        session_start:
+          type: srting
+      example:
+        auth0_id: auth0|123456789101213
+        session_start: 2023-01-23T00:00:01.001Z
+    CreateSessionResponse:
+      title: CreateSessionResponse
+      type: object
+      properties:
+        msg:
+          type: string
+        session:
+          type: object
+          properties:
+            id:
+              type: number
+            auth0_id:
+              type: string
+            session_start:
+              type: string
+            session_end:
+              type: string
+      example:
+        msg: Session was created successfully
+        session:
+          id: 5
+          auth0_id: auth0|123456789101213
+          session_start: 2023-01-23T00:00:01.001Z
+          session_end: --
+    GetAllSessionsResponse:
+      title: GetAllSessionsResponse
+      type: object
+      properties:
+        sessions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              auth0_id:
+                type: string
+              session_staret:
+                type: string
+              session_end:
+                type: string
+        count:
+          type: number
+      example:
+        sessions:
+          - id: 5
+            auth0_id: auth0|123456789101213
+            session_start: 2023-01-23T00:00:01.001Z
+            session_end: 2023-01-24T12:10:24.781Z
+          - id: 6
+            auth0_id: facebook|123456789111213
+            session_start: 2023-01-24T19:35:56.123Z
+            session_end: --
+        count: 2
+    UpdateSessionRequest:
+      title: UpdateSessionRequest
+      required:
+        - session_end
+      type: object
+      properties:
+        session_end:
+          type: string
+      example:
+        session_end: 2023-01-24T19:35:56.123Z
+    UpdateSessionResponse:
+      title: UpdateSessionResponse
+      type: object
+      properties:
+        msg:
+          type: string
+        session:
+          type: object
+          properties:
+            id:
+              type: number
+            auth0_id:
+              type: string
+            session_start:
+              type: string
+            session_end:
+              type: string
+      example:
+        msg: Session was updated successfully
+        session:
+          id: 5
+          auth0_id: auth0|123456789101213
+          session_start: 2023-01-23T00:00:01.001Z
+          session_end: 2023-01-24T19:35:56.123Z
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
+tags:
+  - name: Auth
+    description: Initiate/Exit authentication - Use BaseUrl as the base URL
+  - name: Auth0
+    description: Auth0 access token & manual sign-up - Use Auth0Url as the base URL
+  - name: Users
+    description: CRUD operations on user data - Use ApiUrl as the base URL
+  - name: Sessions
+    description: GET, POST and PATCH session data - Use ApiUrl as the base URL
