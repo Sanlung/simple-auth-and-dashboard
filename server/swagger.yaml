@@ -9,7 +9,7 @@ info:
 servers:
   - url: http://localhost:3000/api
     description: development BaseUrl
-  - url: https://simpleauthanddashboard.web.app/api
+  - url: https://simple-auth-and-dashboard.vercel.app/api
     description: poduction BaseUrl
   - url: http://localhost:3001/api/v1
     description: development ApiUrl
