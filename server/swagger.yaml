@@ -9,11 +9,11 @@ info:
 servers:
   - url: http://localhost:3000/api
     description: development BaseUrl
-  - url: https://simple-auth-and-dashboard.web.app/api
+  - url: https://simpleauthanddashboard.web.app/api
     description: poduction BaseUrl
   - url: http://localhost:3001/api/v1
     description: development ApiUrl
-  - url: https://simple-auth-and-dashboard.onrender.com/api/v1
+  - url: https://simpleauthanddashboard.onrender.com/api/v1
     description: production ApiUrl
   - url: https://dev-lp2pqg88am2bfulk.us.auth0.com
     description: Auth0Url for Auth0 API
