@@ -16,7 +16,9 @@ servers:
   - url: https://simpleauthanddashboard.onrender.com/api/v1
     description: production ApiUrl
   - url: https://dev-lp2pqg88am2bfulk.us.auth0.com
-    description: Auth0Url for Auth0 API
+    description: development Auth0Url
+  - url: https://simeple-auth-and-dashboard.jp.auth0.com
+    description: production Auth0Url
 paths:
   /auth/sign-up:
     get:
