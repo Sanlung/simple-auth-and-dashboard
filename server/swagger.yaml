@@ -29,9 +29,13 @@ paths:
       description: Call to initiate authentication and for redirection to sign-up interface
       parameters: []
       responses:
-        "302":
+        "200":
           description: Success - redirect to Auth0 sign-up page
           headers: {}
+          content:
+            text/html:
+              shcema:
+                type: html
       deprecated: false
       security: []
   /auth/login:
@@ -43,9 +47,13 @@ paths:
       description: Call to initiate authentication and for redirection to login interface
       parameters: []
       responses:
-        "302":
+        "200":
           description: Success - redirect to Auth0 login page
           headers: {}
+          content:
+            text/html:
+              shcema:
+                type: html
       deprecated: false
       security: []
   /auth/logout:
@@ -57,9 +65,13 @@ paths:
       description: Call to log out user and redirect to application login page
       parameters: []
       responses:
-        "302":
-          description: Success - redirect to application login page
+        "200":
+          description: Success - redirect to application logged out URL
           headers: {}
+          content:
+            text/html:
+              shcema:
+                type: html
       deprecated: false
       security: []
   /oauth/token:
@@ -71,7 +83,7 @@ paths:
       description: Retrieve Auth0 access token to access application API
       parameters: []
       requestBody:
-        description: client_id, client_secret, audience, grant_type are required
+        description: `client_id`, `client_secret`, `audience`, `grant_type` are required
         content:
           application/json:
             schema:
@@ -79,7 +91,7 @@ paths:
             example:
               client_id: CLIENT_ID
               client_secret: CLIENT_SECRET
-              audience: https://simple-auth-and-dashboard.onrender.com/api/v1/
+              audience: https://simpleauthanddashboard.onrender.com/api/v1/
               grant_type: client_credentials
         required: true
       responses:
@@ -102,10 +114,10 @@ paths:
         - Auth0
       summary: Sign Up User
       operationId: SignUpUser
-      description: Sign up user with Auth0. Accepts only 'Username-Password-Authentication' connection. The user manually signed up this way will not be added to the application database and will need to be manually added in there.
+      description: Sign up user with Auth0. Accepts only `Username-Password-Authentication` connection. The user manually signed up this way will not be added to the application database and will need to be manually added in there.
       parameters: []
       requestBody:
-        description: client_id, email, password and connection are required
+        description: `client_id`, `email`, `password` and `connection` are required
         content:
           application/json:
             schema:
@@ -140,7 +152,7 @@ paths:
       description: Create a new user
       parameters: []
       requestBody:
-        description: auth0_id, profile_name, email, created_at, and logins_count are required and profile_name and email must be unique
+        description: `auth0_id`, `profile_name`, `email`, `created_at`, and `logins_count` are required and `profile_name` and `email` must be unique
         content:
           application/json:
             schema:
@@ -260,7 +272,7 @@ paths:
             type: string
             example: auth0|123456789101213
       requestBody:
-        description: Can update either profile_name or logins_count in a single request
+        description: Can update either `profile_name` or `logins_count` in a single request
         content:
           application/json:
             schema:
@@ -330,7 +342,7 @@ paths:
       description: Create a new session
       parameters: []
       requestBody:
-        description: auth0_id and session_start are required and auth0_id must exists in users
+        description: `auth0_id` and `session_start` are required and `auth0_id` must exists in users
         content:
           application/json:
             schema:
@@ -359,13 +371,13 @@ paths:
     get:
       tags:
         - Sessions
-      summary: Get All Sessions
-      operationId: GetAllSessions
-      description: Get all the existing sessions
+      summary: Get Week Sessions
+      operationId: GetWeekSessions
+      description: Get the past week's sessions
       parameters: []
       responses:
         "200":
-          description: OK - returns all the sessions
+          description: OK - returns the past week's sessions
           content:
             application/json:
               schema:
@@ -408,7 +420,7 @@ paths:
             type: number
             example: 5
       requestBody:
-        description: Can update only session_end
+        description: Can update only `session_end`
         content:
           application/json:
             schema:
@@ -759,8 +771,8 @@ components:
           auth0_id: auth0|123456789101213
           session_start: 2023-01-23T00:00:01.001Z
           session_end: --
-    GetAllSessionsResponse:
-      title: GetAllSessionsResponse
+    GetWeekSessionsResponse:
+      title: GetWeekSessionsResponse
       type: object
       properties:
         sessions:
