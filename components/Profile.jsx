@@ -1,5 +1,6 @@
 import {useState, useEffect, useRef} from "react";
 import {useRouter} from "next/router";
+import {useUser} from "@auth0/nextjs-auth0/client";
 import {
   ListGroup,
   ListGroupItem,
@@ -9,9 +10,13 @@ import {
 } from "reactstrap";
 
 const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
+  // get session user
+  const {user} = useUser();
+  // for displaying prohibitive message
+  const [isProhibited, setIsProhibited] = useState(false);
   // for controlled input
   const [name, setName] = useState(profile.profile_name);
-  // toggle display of username or input box
+  // toggle display of username or input field
   const [isEdit, setIsEdit] = useState(false);
   // "yes" or "no", for displaying messages
   const [isPWEmailSent, setIsPWEmailSent] = useState(null);
@@ -27,31 +32,50 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
 
   // function to send change-password email
   const sendChangePasswordEmail = async () => {
-    try {
-      // sending user to /api to send email
-      const response = await fetch("/api/auth/change-password");
-      const data = await response.json();
-      console.log("/api/change-password", data);
+    if (user.sub.includes("auth0")) {
+      try {
+        // sending user to /api to send email
+        const response = await fetch("/api/auth/change-password");
+        const data = await response.json();
+        // console.log("/api/change-password", data);
 
-      // display message per API response
-      if (response.status === 200) {
-        setIsPWEmailSent("yes");
-      } else {
-        setIsPWEmailSent("no");
+        // display message per API response
+        if (response.status === 200) {
+          setIsPWEmailSent("yes");
+        } else {
+          setIsPWEmailSent("no");
+        }
+        // fade out message after 6s
+        setTimeout(() => setIsPWEmailSent(null), 6000);
+      } catch (error) {
+        console.log(error);
       }
+    } else {
+      // display prohibitive message
+      setIsProhibited(true);
       // fade out message after 6s
-      setTimeout(() => setIsPWEmailSent(null), 6000);
-    } catch (error) {
-      console.log(error);
+      setTimeout(() => setIsProhibited(false), 6000);
     }
   };
 
+  // function to screen if user can edit name
+  const handleEditName = () => {
+    if (user.sub.includes("auth0")) {
+      setIsEdit(true);
+    } else {
+      // display prohibitive message
+      setIsProhibited(true);
+      // fade out message after 6s
+      setTimeout(() => setIsProhibited(false), 6000);
+    }
+  };
   // function to update user name
   const handleSubmit = (e) => {
     e.preventDefault();
     if (name !== profile.profile_name) {
       onUpdate(name);
     }
+    // reset to display name
     setIsEdit(false);
   };
 
@@ -67,7 +91,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
         }),
       });
       const data = await response.json();
-      console.log("/api/sessions/end", data);
+      // console.log("/api/sessions/end", data);
 
       if (response.status === 200) {
         router.push("/api/auth/logout");
@@ -131,34 +155,31 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
             value='Submit Name'
           />
         ) : (
-          <Button color='primary' outline onClick={(e) => setIsEdit(true)}>
+          <Button color='primary' outline onClick={(e) => handleEditName()}>
             Edit Name
           </Button>
         )}
       </ButtonGroup>
       {/* conditionally renders messages upon success or failure to send email or to update user */}
+      {isProhibited && (
+        <CardText tag='h6' className='my-3 text-danger'>
+          You can&apos;t change your name or password. Please make any changes
+          on the social identity provider you signed in from.
+        </CardText>
+      )}
       {isPWEmailSent === "yes" && (
         <CardText tag='h6' className='my-3 text-primary'>
           We&apos;ve sent an email to {profile.email}. Please follow the
           instructions in the email to change your passowrd.
         </CardText>
       )}
-      {isPWEmailSent === "no" && (
+      {(hasUpdateFailed || isPWEmailSent === "no") && (
         <CardText tag='h6' className='my-3 text-danger'>
           Something went wrong. Please try again or contact{" "}
           <a href='#' className='text-decoration-none text-primary'>
             Support
           </a>{" "}
           if the problem persists.
-        </CardText>
-      )}
-      {hasUpdateFailed && (
-        <CardText tag='h6' className='my-3 text-danger'>
-          The name is not available. Please try again or contact{" "}
-          <a href='#' className='text-decoration-none text-primary'>
-            Support
-          </a>{" "}
-          if you have problem change the name.
         </CardText>
       )}
     </>

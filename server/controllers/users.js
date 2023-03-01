@@ -4,7 +4,7 @@ const CustomApiError = require("../customError");
 const {
   getAllUsers,
   getOneUser,
-  checkDupEmail,
+  // checkDupEmail,
   addOneUser,
   editUserInfo,
   removeOneUser,
@@ -33,9 +33,8 @@ const createUser = async (req, res) => {
   const {auth0_id, profile_name, email, created_at, logins_count} = req.body;
 
   // send back bad-request if email already exists
-  const check = await pool.query(checkDupEmail, [email]);
-
-  if (check.rows.length) throw new CustomApiError(400, "Email already exists");
+  // const check = await pool.query(checkDupEmail, [email]);
+  // if (check.rows.length) throw new CustomApiError(400, "Email already exists");
 
   const result = await pool.query(addOneUser, [
     auth0_id,

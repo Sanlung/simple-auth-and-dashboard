@@ -3,8 +3,10 @@ const updateFields = require("../patchHelper");
 const CustomApiError = require("../customError");
 const {
   getWeekSessions,
+  getOneSession,
   startSession,
   closeSession,
+  deleteOneSession,
 } = require("../queries/sessions");
 
 // GET /api/v1/sessions
@@ -28,6 +30,17 @@ const createSession = async (req, res) => {
   });
 };
 
+// GET /api/v1/sessions/:id
+const getSessionById = async (req, res) => {
+  const id = req.params.id;
+
+  const result = await pool.query(getOneSession, [id]);
+
+  if (!result.rows.length) throw new CustomApiError(404, "User was not found");
+
+  res.status(200).json({session: result.rows[0]});
+};
+
 // PATCH /api/v1/sessions/:id
 const updateSession = async (req, res) => {
   // allow update only for session_end
@@ -45,8 +58,27 @@ const updateSession = async (req, res) => {
   res.status(200).json({
     msg: "Session was updated successfully.",
     session: result.rows[0],
-    reqBody: field,
   });
 };
 
-module.exports = {getSessions, createSession, updateSession};
+// DELETE /api/v1/sessions/:id
+const deleteSession = async (req, res) => {
+  const id = req.params.id;
+
+  const result = await pool.query(deleteOneSession, [id]);
+
+  if (!result.rowCount) throw new CustomApiError(404, "User was not found.");
+
+  res.status(200).json({
+    msg: "Session was deleted successfully.",
+    session: result.rows[0],
+  });
+};
+
+module.exports = {
+  getSessions,
+  createSession,
+  getSessionById,
+  updateSession,
+  deleteSession,
+};

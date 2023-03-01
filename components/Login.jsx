@@ -18,7 +18,7 @@ const Login = () => (
           <Button href='/api/auth/login' tag='a' color='primary' outline>
             Login
           </Button>
-          <Button href='/api/auth/sign-up' tag='a' color='primary' outline>
+          <Button href='/api/auth/signup' tag='a' color='primary' outline>
             Sign up
           </Button>
         </ButtonGroup>

@@ -8,6 +8,9 @@ const getWeekSessions =
   weekAgoStr +
   "' ORDER BY id DESC";
 
+// for use by getSessionById controller
+const getOneSession = "SELECT * FROM sessions where id = $1";
+
 // for use by startSession controller
 const startSession =
   "INSERT INTO sessions(auth0_id, session_start, session_end) VALUES($1, $2, DEFAULT) RETURNING *";
@@ -16,4 +19,13 @@ const startSession =
 const closeSession = (set) =>
   `UPDATE sessions SET ${set} WHERE id = $1 RETURNING *`;
 
-module.exports = {getWeekSessions, startSession, closeSession};
+// for use by deleteSession controller
+const deleteOneSession = "DELETE FROM sessions WHERE id = $1 RETURNING *";
+
+module.exports = {
+  getWeekSessions,
+  startSession,
+  getOneSession,
+  closeSession,
+  deleteOneSession,
+};

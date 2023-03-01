@@ -11,6 +11,10 @@ import {handleAuth, handleLogin} from "@auth0/nextjs-auth0";
 const apiBaseUrl = process.env.API_BASE_URL;
 
 export default handleAuth({
+  // add sign-up interface
+  signup: handleLogin({
+    authorizationParams: {screen_hint: "signup"}
+  }),
   // add external API to Auth0
   login: handleLogin({
     authorizationParams: {

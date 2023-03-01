@@ -25,7 +25,7 @@ const verificationEmailHandler = async (req, res) => {
       }),
     });
     const data1 = await response1.json();
-    console.log("auth0Url/oauth/token", data1);
+    // console.log("auth0Url/oauth/token", data1);
 
     // if auth0 returns access token
     if (response1.status === 200) {
@@ -51,7 +51,7 @@ const verificationEmailHandler = async (req, res) => {
         }
       );
       const data2 = await response2.json();
-      console.log("auth0Url/api/v2/jobs/verification-email", data2);
+      // console.log("auth0Url/api/v2/jobs/verification-email", data2);
 
       // respond with status whether email is sent
       res.status(response2.status).json(data2);

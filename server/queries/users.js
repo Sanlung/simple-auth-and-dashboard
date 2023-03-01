@@ -5,7 +5,7 @@ const getAllUsers = "SELECT * FROM users ORDER BY id";
 const getOneUser = "SELECT * FROM users WHERE auth0_id = $1";
 
 // for auxiliary use by createUser controller
-const checkDupEmail = "SELECT s FROM users s WHERE s.email = $1";
+// const checkDupEmail = "SELECT s FROM users s WHERE s.email = $1";
 
 // for use by createUser controller
 const addOneUser =
@@ -21,7 +21,7 @@ const removeOneUser = "DELETE FROM users WHERE auth0_id = $1 RETURNING *";
 module.exports = {
   getAllUsers,
   getOneUser,
-  checkDupEmail,
+  // checkDupEmail,
   addOneUser,
   editUserInfo,
   removeOneUser,

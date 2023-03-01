@@ -23,16 +23,17 @@ const Home = () => {
 
   const getUsersAndSessionsData = useCallback(async () => {
     if (user) {
+      // console.log(user);
       try {
         // fetch past week's user sessions
         const response1 = await fetch("/api/sessions");
         const sessionData = await response1.json();
-        console.log("/api/sessions", sessionData);
+        // console.log("/api/sessions", sessionData);
 
         // fetch all user data
         const response2 = await fetch("/api/users");
         const data2 = await response2.json();
-        console.log("/api/users", data2);
+        // console.log("/api/users", data2);
 
         // add last_session prop to user data
         // & convert timestamps to UTC+8(TPE)
@@ -97,7 +98,7 @@ const Home = () => {
         }),
       });
       const data = await response.json();
-      console.log("/api/users/rename", data);
+      // console.log("/api/users/rename", data);
 
       if (response.status === 200) {
         // refetch user data

@@ -1,12 +1,29 @@
-import {getAccessToken, withApiAuthRequired} from "@auth0/nextjs-auth0";
+import {withApiAuthRequired} from "@auth0/nextjs-auth0";
 
 // Handler to get last week's sessions data
 const getSessionDataHandler = async (req, res) => {
+  // get environment variable ready
+  const clientId = process.env.AUTH0_CLIENT_ID;
+  const clientSecret = process.env.AUTH0_CLIENT_SECRET;
+  const auth0Url = process.env.AUTH0_ISSUER_BASE_URL;
   const apiBaseUrl = process.env.API_BASE_URL;
 
   try {
     // get access token for backend API
-    const {accessToken} = await getAccessToken(req, res);
+    const tokenRes = await fetch(`${auth0Url}/oauth/token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        client_id: clientId,
+        client_secret: clientSecret,
+        audience: `${apiBaseUrl}/api/v1/`,
+        grant_type: "client_credentials",
+      }),
+    });
+    const tokenObj = await tokenRes.json();
+    const accessToken = tokenObj.access_token;
 
     // GET week's sessions
     const response = await fetch(`${apiBaseUrl}/api/v1/sessions`, {
@@ -15,7 +32,7 @@ const getSessionDataHandler = async (req, res) => {
       },
     });
     const data = await response.json();
-    console.log("GET apiBaseUrl/api/v1/sessions", data);
+    // console.log("GET apiBaseUrl/api/v1/sessions", data);
 
     res.status(response.status).json(data);
   } catch (error) {

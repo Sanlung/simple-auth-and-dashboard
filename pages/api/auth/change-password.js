@@ -22,7 +22,7 @@ const changePasswordHandler = async (req, res) => {
       }),
     });
     const message = await response.text();
-    console.log("auth0Url/dbconnections/change_password", message);
+    // console.log("auth0Url/dbconnections/change_password", message);
 
     res.status(response.status).json({message});
   } catch (error) {

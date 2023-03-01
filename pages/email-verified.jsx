@@ -23,7 +23,7 @@ const EmailVerified = () => {
     fetch("/api/auth/refresh-token")
       .then((res) => res.json())
       .then((user) => {
-        console.log("/api/refresh-token", user);
+        // console.log("/api/refresh-token", user);
         // redirect if user email is not verified
         if (!user.email_verified) return router.push("/");
         setUser(user);

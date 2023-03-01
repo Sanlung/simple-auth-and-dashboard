@@ -19,7 +19,7 @@ const VerifyEmail = ({user}) => {
       // sending user to /api to resend email
       const response = await fetch("/api/auth/verification-email");
       const data = await response.json();
-      console.log("/api/verificationEmail", data);
+      // console.log("/api/verificationEmail", data);
 
       // display message per API response
       if (response.status === 201) {
