@@ -48,7 +48,7 @@ const EmailVerified = () => {
           />
           <CardBody>
             <CardTitle tag='h2'>Email Verified</CardTitle>
-            <CardSubtitle tag='h5'>
+            <CardSubtitle tag='h5' className='mb-2'>
               Your account email has been verified. Account registration is
               complete.
             </CardSubtitle>

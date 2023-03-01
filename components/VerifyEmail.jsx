@@ -44,8 +44,8 @@ const VerifyEmail = ({user}) => {
         height='280'
         priority
       />
-      <CardTitle tag='h2'>Action Required</CardTitle>
       <CardBody>
+        <CardTitle tag='h2'>Action Required</CardTitle>
         <CardSubtitle tag='h5' className='mb-2'>
           Please verify your email to complete the registration.
         </CardSubtitle>
