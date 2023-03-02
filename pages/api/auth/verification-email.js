@@ -10,8 +10,6 @@ const verificationEmailHandler = async (req, res) => {
   try {
     // get user session
     const {user} = await getSession(req, res);
-    // split user_id, e.g., "facebook|0123456789"
-    const identities = user.sub.split("|");
 
     // get Auth0 Mgt API access token
     const response1 = await fetch(`${auth0Url}/oauth/token`, {
@@ -43,10 +41,6 @@ const verificationEmailHandler = async (req, res) => {
           body: JSON.stringify({
             user_id: user.sub,
             client_id: clientId,
-            identity: {
-              user_id: identities[1],
-              provider: identities[0],
-            },
           }),
         }
       );

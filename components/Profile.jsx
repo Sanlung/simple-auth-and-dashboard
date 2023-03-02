@@ -164,7 +164,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
       {isProhibited && (
         <CardText tag='h6' className='my-3 text-danger'>
           You can&apos;t change your name or password. Please make any changes
-          on the social identity provider you signed in from.
+          with the social identity provider you signed in from.
         </CardText>
       )}
       {isPWEmailSent === "yes" && (
