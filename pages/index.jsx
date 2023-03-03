@@ -5,7 +5,6 @@ import Layout from "../components/Layout";
 import Login from "../components/Login";
 import Dashboard from "../components/Dashboard";
 import VerifyEmail from "../components/VerifyEmail";
-// import useSessionPersistentState from "../util/persistState";
 
 const Home = () => {
   // get auth0 profile of logged-in user

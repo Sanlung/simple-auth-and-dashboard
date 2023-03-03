@@ -1,5 +1,12 @@
 import Image from "next/image";
-import {Card, CardBody, CardTitle, Button, ButtonGroup} from "reactstrap";
+import {
+  Card,
+  CardBody,
+  CardTitle,
+  CardFooter,
+  Button,
+  ButtonGroup,
+} from "reactstrap";
 
 const Login = () => (
   <>
@@ -23,6 +30,14 @@ const Login = () => (
           </Button>
         </ButtonGroup>
       </CardBody>
+      <CardFooter>
+        <a
+          href='https://www.freeprivacypolicy.com/live/4c54260e-8fa1-4a8c-b4bc-4d3abb5acdff'
+          target='_blank'
+          rel='noreferrer'>
+          Privacy Policy
+        </a>
+      </CardFooter>
     </Card>
   </>
 );
