@@ -1,6 +1,5 @@
 import {useState, useEffect, useRef} from "react";
 import {useRouter} from "next/router";
-import {useUser} from "@auth0/nextjs-auth0/client";
 import {
   ListGroup,
   ListGroupItem,
@@ -10,8 +9,8 @@ import {
 } from "reactstrap";
 
 const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
-  // get session user
-  const {user} = useUser();
+  // get Auth0 identity provider
+  const idProvider = profile.auth0_id.split("|")[0].split("-")[0];
   // for displaying prohibitive message
   const [isProhibited, setIsProhibited] = useState(false);
   // for controlled input
@@ -32,7 +31,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
 
   // function to send change-password email
   const sendChangePasswordEmail = async () => {
-    if (user.sub.includes("auth0")) {
+    if (idProvider === "auth0") {
       try {
         // sending user to /api to send email
         const response = await fetch("/api/auth/change-password");
@@ -58,17 +57,6 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
     }
   };
 
-  // function to screen if user can edit name
-  const handleEditName = () => {
-    if (user.sub.includes("auth0")) {
-      setIsEdit(true);
-    } else {
-      // display prohibitive message
-      setIsProhibited(true);
-      // fade out message after 6s
-      setTimeout(() => setIsProhibited(false), 6000);
-    }
-  };
   // function to update user name
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -155,7 +143,7 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
             value='Submit Name'
           />
         ) : (
-          <Button color='primary' outline onClick={(e) => handleEditName()}>
+          <Button color='primary' outline onClick={(e) => setIsEdit(true)}>
             Edit Name
           </Button>
         )}
@@ -163,8 +151,8 @@ const Profile = ({profile, onUpdate, hasUpdateFailed}) => {
       {/* conditionally renders messages upon success or failure to send email or to update user */}
       {isProhibited && (
         <CardText tag='h6' className='my-3 text-danger'>
-          You can&apos;t change your name or password. Please make any changes
-          with the social identity provider you signed in from.
+          You can&apos;t change your password here. Please change your password
+          with {idProvider.slice(0, 1).toUpperCase() + idProvider.slice(1)}.
         </CardText>
       )}
       {isPWEmailSent === "yes" && (
